@@ -6,7 +6,7 @@ In this fuel delivery job, players are required to deliver fuel to different gas
 
 ## How to Start
 
-To initiate the job, players must speak to the fuel dispatcher. Afterward, they will speak to the dockworker to sign out a truck and trailer. Once they have the truck and trailer, they will go to the Gas Depot to fill the tanker. After filling the tanker, they will receive a route to a random gas station to deliver the fuel.
+To initiate the job, players must speak to the fuel dispatcher. Once they have the truck and trailer, they will go to the Gas Depot to fill the tanker. After filling the tanker, they will receive a route to a random gas station to deliver the fuel.
 
 Players can repeat this process as many times as they want, delivering fuel to various gas stations around Los Santos.
 
