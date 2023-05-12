@@ -22,3 +22,6 @@ By reporting issues, you help improve the fuel delivery job for all players and 
 - qb-target
 
 Place this file inside your [standalone] folder and start the script. 
+
+
+## PLACE THE OGG FILES FROM SOUNDS TO YOUR INTERACT SOUNDS SCRIPT FOUND IN STANDALONE
