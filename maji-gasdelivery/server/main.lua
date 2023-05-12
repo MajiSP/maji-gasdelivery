@@ -9,11 +9,11 @@ AddEventHandler('md-checkCash', function()
     print(moneyType)
     if balance >= Config.TruckPrice then
         if moneyType == 'cash' then
-            Player.Functions.RemoveMoney(moneyType, Config.TruckPrice)
+            Player.Functions.RemoveMoney(moneyType, Config.TruckPrice, "gas-delivery-truck")
             TriggerClientEvent('spawnTruck', src)
             TriggerClientEvent('TrailerBlip', src)
         else
-            Player.Functions.RemoveMoney(moneyType, Config.TruckPrice)
+            Player.Functions.RemoveMoney(moneyType, Config.TruckPrice, "gas-delivery-truck")
             TriggerClientEvent('spawnTruck', src)
             TriggerClientEvent('TrailerBlip', src)
         end
@@ -28,5 +28,5 @@ AddEventHandler('md-getpaid', function(stationsRefueled)
     local Player = QBCore.Functions.GetPlayer(src)
     local moneyType = Config.PayType
     local balance = Player.Functions.GetMoney(moneyType)
-    Player.Functions.AddMoney(Config.PayType, stationsRefueled * Config.PayPerFueling)
+    Player.Functions.AddMoney(Config.PayType, stationsRefueled * Config.PayPerFueling, "gas-delivery-paycheck")
 end)
