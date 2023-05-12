@@ -15,3 +15,10 @@ Players can repeat this process as many times as they want, delivering fuel to v
 The fuel delivery script is constantly being updated to improve the player experience and fix any bugs or issues. If you encounter any problems while using the fuel delivery job, you can report them to Maji#1118 on Discord. Alternatively, you can create a GitHub issue to report any bugs or issues you encounter.
 
 By reporting issues, you help improve the fuel delivery job for all players and contribute to a better gaming experience.
+
+# DEPENDENCIES
+
+- qb-core
+- qb-target
+
+Place this file inside your [standalone] folder and start the script. 
