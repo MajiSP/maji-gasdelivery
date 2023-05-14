@@ -25,18 +25,30 @@ local RefuelingStation = false
 local timestried = 0
 local StoredTruck = nil
 local StoredTrailer = nil
+local src = source
 
 local trailerModels = {
     1956216962,
 }
+
+local myBoxZone = BoxZone:Create(vector3(1694.6, -1460.75, 112.92), 26.8, 15, {
+    heading = 345,
+    debugPoly = true
+})
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 local function LoadAnimDict(dict)
     RequestAnimDict(dict)
     while not HasAnimDictLoaded(dict) do Wait(10) end
 end
 
+--/////////////////////////////////////////////////////////////////////////////////////////////////--
+
 local pedModel = Config.PedType
 local pedCoords = vector4(1721.87, -1557.67, 111.65, 243.12)
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 Citizen.CreateThread(function()
     local pedHash = GetHashKey(pedModel)
@@ -86,6 +98,8 @@ Citizen.CreateThread(function()
         distance = 2.0,
     })
 end)
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 Citizen.CreateThread(function()
     for _, info in pairs(Config.Blip) do
@@ -285,29 +299,48 @@ end)
 
 function BringToTruck()
     print("cooldown: "..cooldown)
+    CreateThread(function()
+        local insideZone = false
+        while true do
+            Wait(500)
+            local playerPed = PlayerPedId()
+            local playerCoords = GetEntityCoords(playerPed)
 
-    if truck == 1 and cooldown == 0 then
-        QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
-        exports['qb-target']:AddTargetModel(trailerModels, {
-            options = {
-            {
-                event = "FuelTruck",
-                icon = "fas fa-gas-pump",
-                label = "Fuel Truck",
-                canInteract = function()
-                    if nozzleInHand and cooldown == 0 then
-                        return true
+            if myBoxZone:isPointInside(playerCoords) then
+                if not insideZone then
+                    insideZone = true
+                    if truck == 1 and cooldown == 0 then
+                        QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
+                        exports['qb-target']:AddTargetModel(trailerModels, {
+                            options = {
+                            {
+                                event = "FuelTruck",
+                                icon = "fas fa-gas-pump",
+                                label = "Fuel Truck",
+                                canInteract = function()
+                                    if nozzleInHand and cooldown == 0 then
+                                        return true
+                                    else
+                                        return false
+                                    end
+                                end
+                            },
+                        },
+                        distance = 5.0,
+                        })
                     else
-                        return false
+                        QBCore.Functions.Notify('You do not need to refuel!', 'error', 5000)
                     end
+                    print("Player has entered the box zone")
                 end
-            },
-        },
-        distance = 5.0,
-        })
-    else
-        QBCore.Functions.Notify('You do not need to refuel!', 'error', 5000)
-    end
+            else
+                if insideZone then
+                    insideZone = false
+                    print("Player has left the box zone")
+                end
+            end
+        end
+    end)
 end
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
@@ -640,16 +673,15 @@ RegisterNetEvent('refuelStation1', function()
             stationsRefueled = stationsRefueled + 1
             maxStations = maxStations + 1
             if maxStations == Config.MaxFuelDeliveries then
-                cooldown = cooldown - 1
                 StopAnimTask(playerPed, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
                 TriggerServerEvent("InteractSound_SV:PlayOnSource", "fuelstop", 0.4)
                 QBCore.Functions.Notify('Your tank is empty! Return to refuel, or get paid!', 'success', 5000)
                 RemoveBlip(GasBlip3)
                 DeleteObject(refuelProp1)
-                DeleteRope(Rope2)
-                DeleteObject(fuelnozzle2)
                 FreezeEntityPosition(trailerId, false)
                 TriggerEvent('spawnFlashingBlip')
+                Wait(30000)
+                cooldown = cooldown - 1
             else
                 QBCore.Functions.Notify('You have finished refueling. You will be receiving an email with the next location soon!', 'success', 5000)
                 StopAnimTask(playerPed, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
