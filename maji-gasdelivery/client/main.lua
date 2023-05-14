@@ -328,8 +328,6 @@ function BringToTruck()
                         },
                         distance = 5.0,
                         })
-                    else
-                        QBCore.Functions.Notify('You do not need to refuel!', 'error', 5000)
                     end
                     print("Player has entered the box zone")
                 end
