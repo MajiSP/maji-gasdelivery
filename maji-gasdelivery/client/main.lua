@@ -33,7 +33,7 @@ local trailerModels = {
 
 local myBoxZone = BoxZone:Create(vector3(1694.6, -1460.75, 112.92), 26.8, 15, {
     heading = 345,
-    debugPoly = true
+    debugPoly = false
 })
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
