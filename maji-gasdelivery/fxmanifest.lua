@@ -7,8 +7,14 @@ author 'Maji#1118'
 description 'Fuel Delivery Job'
 version '1.0.0'
 
-shared_script 'config.lua'
-client_script 'client/main.lua'
+shared_scripts {
+    'config.lua',
+    '@PolyZone/client.lua',
+    '@PolyZone/BoxZone.lua'
+}
+client_scripts {
+    'client/main.lua',
+}
 server_script 'server/main.lua'
 
 dependencies {
