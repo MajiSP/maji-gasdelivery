@@ -124,7 +124,7 @@ AddEventHandler("spawnTruck", function()
         DeleteVehicle(StoredTruck)
         TruckNetID = NetworkGetNetworkIdFromEntity(veh)
         print("truck ID: "..TruckNetID)
-        SetVehicleNumberPlateText(veh, 'TRUCKER')
+        SetVehicleNumberPlateText(veh, 'TRUCK' .. tostring(math.random(1000, 9999)))
         SetEntityHeading(veh, heading)
 
         exports[Config.FuelScript]:SetFuel(veh, 100.0)
