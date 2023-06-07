@@ -50,12 +50,19 @@ local pedCoords = vector4(1721.87, -1557.67, 111.65, 243.12)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
-Citizen.CreateThread(function()
+CreateThread(function()
+    while true do
+        FreezeEntityPosition(pumpProp, true)
+        Wait(0)
+    end
+end)
+
+CreateThread(function()
     local pedHash = GetHashKey(pedModel)
     RequestModel(pedHash)
 
     while not HasModelLoaded(pedHash) do
-        Citizen.Wait(0)
+        Wait(0)
     end
 
     local targetped = CreatePed(4, pedHash, pedCoords.x, pedCoords.y, pedCoords.z, pedCoords.w, false, true)
@@ -400,6 +407,7 @@ cache_location = randomLocation
     })
     SendBlipToNewLocation(randomLocation)
     RefuelStation(randomLocation)
+    FreezeEntityPosition(pumpProp, true)
 end
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
