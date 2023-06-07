@@ -25,3 +25,9 @@ Place this file inside your [standalone] folder and start the script.
 
 
 ## PLACE THE OGG FILES FROM SOUNDS TO YOUR INTERACT SOUNDS SCRIPT FOUND IN STANDALONE
+
+
+
+
+# Feel free to donate to my Ko-fi to help support future civ jobs :) 
+## https://ko-fi.com/majidev
