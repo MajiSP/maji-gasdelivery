@@ -77,6 +77,7 @@ CreateThread(function()
     SetPedCanPlayVisemeAnims(targetped, false, false)
     SetPedCanPlayInjuredAnims(targetped, false)
     FreezeEntityPosition(targetped, true)
+    SetEntityInvincible(targetped, true)
 
     exports['qb-target']:AddTargetModel({pedHash}, {
         options = {
@@ -636,7 +637,7 @@ CreateThread(function()
                 type = "client",
                 event = "refuelTanker",
                 icon = "fas fa-gas-pump",
-                label = "grab nozzle",
+                label = "Grab Nozzle",
                 canInteract = function()
                     if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
                         return true
@@ -648,7 +649,7 @@ CreateThread(function()
                 type = "client",
                 event = "ReturnNozzle",
                 icon = "fas fa-hand",
-                label = "return nozzle",
+                label = "Return Nozzle",
                 canInteract = function()
                     if nozzleInHand then
                         return true
