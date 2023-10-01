@@ -28,8 +28,7 @@ local StoredTrailer = nil
 local src = source
 
 local trailerModels = {
-    '1956216962',
-    '569305213', -- added this for the packer truck as i cant interact with the trailer if i go with my own truck  
+    '1956216962', 
 }
 
 
@@ -82,41 +81,52 @@ CreateThread(function()
     FreezeEntityPosition(targetped, true)
     SetEntityInvincible(targetped, true)
     
-    exports['qb-target']:AddTargetModel({pedHash}, {
-        options = {
-            {
-                num = 1,
-                type = "server",
-                event = "md-checkCash",
-                icon = "fas fa-sign-in-alt",
-                label = "Rent a Truck and Start Work",
+    if Config.Target == 'qb' then
+
+        exports['qb-target']:AddTargetModel({pedHash}, {
+            options = {
+                {
+                    num = 1,
+                    type = "server",
+                    event = "md-checkCash",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Rent a Truck and Start Work",
+                },
+                {
+                    num = 2,
+                    type = "server",
+                    event = "md-ownedtruck",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Start Work With Your Own Truck",
+                },
+                {
+                    num = 3,
+                    type = "client",
+                    event = "GetTruckerPay",
+                    icon = "fas fa-money-bill-wave",
+                    label = "Get Paycheck",
+                },
+                {
+                    num = 4,
+                    type = "client",
+                    event = "RestartJob",
+                    icon = "fas fa-ban",
+                    label = "Restart Job",
+                },
             },
-            {
-                num = 2,
-                type = "server",
-                event = "md-checkCash2",
-                icon = "fas fa-sign-in-alt",
-                label = "Start Work With Your Own Truck",
-            },
-            {
-                num = 3,
-                type = "client",
-                event = "GetTruckerPay",
-                icon = "fas fa-money-bill-wave",
-                label = "Get Paycheck",
-            },
-            {
-                num = 4,
-                type = "client",
-                event = "RestartJob",
-                icon = "fas fa-ban",
-                label = "Restart Job",
-            },
-        },
-        distance = 2.0,
-    })  
- 
+            distance = 2.0,
+        })  
+    elseif Config.Target == 'ox' then
+        local options = {
+            {type = "server",  name = 'op1', event = "md-checkCash", icon = 'fas fa-sign-in-alt', label = "Rent a Truck and Start Work", distance = 2.0,},
+            {type = "server", event = 'md-ownedtruck', icon = 'fas fa-sign-in-alt', label = "Start Work With Your Own Truck", distance = 2.0,},
+            {type = "client", event = 'GetTruckerPay', icon = 'fas fa-sign-in-alt', label = "Get Paycheck", distance = 2.0,},
+            {type = "client", event = 'RestartJob', icon = 'fas fa-sign-in-alt', label = "Restart Job", distance = 2.0,},
+        }
+        exports.ox_target:addModel(pedHash, options)
+    end
 end)
+
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
@@ -170,6 +180,7 @@ AddEventHandler("spawnTruck", function()
 
         StoredTrailer = NetworkGetEntityFromNetworkId(TrailerNetID)
     end, tankerCoords, heading, true, true)
+   
 end)
 
 RegisterNetEvent("spawnTruck2")
@@ -344,12 +355,28 @@ function BringToTruck()
                     insideZone = true
                     if truck == 1 and cooldown == 0 then
                         QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
-                        exports['qb-target']:AddTargetModel(trailerModels, {
-                            options = {
-                            {
-                                event = "FuelTruck",
-                                icon = "fas fa-gas-pump",
-                                label = "Fuel Truck",
+                        if Config.Target == 'qb' then
+                            exports['qb-target']:AddTargetModel(trailerModels, {
+                                options = {
+                                {
+                                    event = "FuelTruck",
+                                    icon = "fas fa-gas-pump",
+                                    label = "Fuel Truck",
+                                    canInteract = function()
+                                        if nozzleInHand and cooldown == 0 then
+                                            return true
+                                        else
+                                            return false
+                                        end
+                                    end
+                                },
+                            },
+                            distance = 5.0,
+                            })
+                        elseif Config.Target == 'ox' then
+
+                            local options = {
+                                {event = 'FuelTruck', icon = 'fas fa-gas-pump', label = "Fuel Truck", distance = 5.0,
                                 canInteract = function()
                                     if nozzleInHand and cooldown == 0 then
                                         return true
@@ -357,10 +384,13 @@ function BringToTruck()
                                         return false
                                     end
                                 end
-                            },
-                        },
-                        distance = 5.0,
-                        })
+                                },
+                            }
+                            exports.ox_target:addModel(trailerModels, options)
+
+                        end
+
+                        
                     end
                     print("Player has entered the box zone")
                 end
@@ -453,6 +483,7 @@ function RefuelStation(location)
     FreezeEntityPosition(refuelProp1, true)
     SetEntityAsMissionEntity(refuelProp1, true, true)
     if cooldown == 1 then
+        if Config.Target == 'qb' then
             exports['qb-target']:AddTargetModel(trailerModels, {
                 options = {
                 {
@@ -461,7 +492,7 @@ function RefuelStation(location)
                     icon = "fas fa-gas-pump",
                     label = "Grab Fuel Line",
                     action = function()
-                        FreezeEntityPosition(trailerId, true)
+                       -- FreezeEntityPosition(trailerId, true)
                         nozzleInHand = true
                         TriggerEvent('pumpRefuel')
                     end,
@@ -481,7 +512,7 @@ function RefuelStation(location)
                     label = "Return Nozzle",
                     action = function()
                         nozzleInHand = false
-                        FreezeEntityPosition(trailerId, false)
+                       -- FreezeEntityPosition(trailerId, false)
                         TriggerEvent('ReturnNozzle')
                     end,
                     canInteract = function()
@@ -495,6 +526,47 @@ function RefuelStation(location)
             },
             distance = 5.0
         })
+          
+        elseif Config.Target == 'ox' then
+
+            local options = {
+                {event = 'pumpRefuel', icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
+
+                action = function()
+                    --FreezeEntityPosition(trailerId, true)
+                    nozzleInHand = true
+                    TriggerEvent('pumpRefuel')
+                end,
+                canInteract = function()
+                    if not nozzleInHand then
+                        return true
+                    else
+                        return false
+                    end
+                end,
+                
+                },
+
+                {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump', label = "Return Nozzle", distance = 5.0,
+
+                action = function()
+                    nozzleInHand = false
+                    FreezeEntityPosition(trailerId, false)
+                    TriggerEvent('ReturnNozzle')
+                end,
+                canInteract = function()
+                    if nozzleInHand and RefuelingStation == false then
+                        return true
+                    else
+                        return false
+                    end
+                end,
+                },
+            }
+            exports.ox_target:addModel(trailerModels, options)
+
+        end
+         
     end
 end
 
@@ -558,13 +630,13 @@ RegisterNetEvent('pumpRefuel', function()
                     BringToStation()
                     Citizen.CreateThread(function()
                         while nozzleInHand do
-                            FreezeEntityPosition(trailerId, true)
+                            --FreezeEntityPosition(trailerId, true)
                             local currentcoords = GetEntityCoords(playerPed)
                             local dist = #(grabbednozzlecoords - currentcoords)
                             if dist > 10.0 then
                                 QBCore.Functions.Notify('Your fuel line has broken!', 'error', 5000)
                                 nozzleInHand = false
-                                FreezeEntityPosition(trailerId, false)
+                               -- FreezeEntityPosition(trailerId, false)
                                 DeleteObject(fuelnozzle2)
                                 RopeUnloadTextures()
                                 DeleteRope(Rope2)
@@ -583,6 +655,7 @@ end)
 function BringToStation()
     QBCore.Functions.Notify('Go fuel up the station!', 'success', 5000)
     print("cooldown: "..cooldown)
+    if Config.Target == 'qb' then
         exports['qb-target']:AddTargetModel(refuelProp, {
             options = {
             {
@@ -600,10 +673,27 @@ function BringToStation()
         },
         distance = 5.0,
     })
+
+    
+       elseif Config.Target == 'ox' then
+
+        local options = {
+            {event = 'refuelStation1', icon = 'fas fa-gas-pump',  label = "Fuel Station", distance = 5.0,
+            canInteract = function()
+                if nozzleInHand and cooldown == 1 then
+                    return true
+                else
+                    return false
+                end
+            end
+            },
+        }
+        exports.ox_target:addModel(refuelProp, options)
+
+       end
 end
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
-
 RegisterNetEvent('GetTruckerPay', function()
     local truckEntity = NetworkGetEntityFromNetworkId(TruckNetID)
     local trailerEntity = NetworkGetEntityFromNetworkId(TrailerNetID)
@@ -621,6 +711,14 @@ RegisterNetEvent('GetTruckerPay', function()
     else
         QBCore.Functions.Notify('You havent done any work!', 'error', 5000)
     end
+end)
+
+RegisterNetEvent('md-checkCash', function()
+    TriggerServerEvent('md-checkCash')
+end)
+
+RegisterNetEvent('md-ownedtruck', function()
+    TriggerServerEvent('md-ownedtruck')
 end)
 
 RegisterNetEvent('RestartJob', function()
@@ -659,35 +757,58 @@ end)
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 CreateThread(function()
-    exports['qb-target']:AddTargetModel(props, {
-        options = {
-            {
-                num = 1,
-                type = "client",
-                event = "refuelTanker",
-                icon = "fas fa-gas-pump",
-                label = "grab nozzle",
+    if Config.Target == 'qb' then
+        exports['qb-target']:AddTargetModel(props, {
+            options = {
+                {
+                    num = 1,
+                    type = "client",
+                    event = "refuelTanker",
+                    icon = "fas fa-gas-pump",
+                    label = "grab nozzle",
+                    canInteract = function()
+                        if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
+                            return true
+                        end
+                    end,
+                },
+                {
+                    num = 2,
+                    type = "client",
+                    event = "ReturnNozzle",
+                    icon = "fas fa-hand",
+                    label = "return nozzle",
+                    canInteract = function()
+                        if nozzleInHand then
+                            return true
+                        end
+                    end,
+                },
+            },
+            distance = 2.0
+        })
+        elseif Config.Target == 'ox' then
+
+            local options = {
+                {type = "client", event = 'refuelTanker', icon = 'fas fa-gas-pump', label = "grab nozzle", distance = 2.0,
                 canInteract = function()
                     if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
                         return true
                     end
                 end,
-            },
-            {
-                num = 2,
-                type = "client",
-                event = "ReturnNozzle",
-                icon = "fas fa-hand",
-                label = "return nozzle",
+                },
+
+                {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump',  label = "return nozzle", distance = 2.0,
                 canInteract = function()
                     if nozzleInHand then
                         return true
                     end
                 end,
-            },
-        },
-        distance = 2.0
-    })
+                },
+            }
+            exports.ox_target:addModel(props, options)
+    end
+ 
 end)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--

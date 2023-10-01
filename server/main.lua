@@ -21,8 +21,8 @@ AddEventHandler('md-checkCash', function()
         TriggerClientEvent('NotEnoughTruckMoney', src)
     end
 end)
-RegisterServerEvent('md-checkCash2')
-AddEventHandler('md-checkCash2', function()
+RegisterServerEvent('md-ownedtruck')
+AddEventHandler('md-ownedtruck', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     local moneyType = Config.PayType

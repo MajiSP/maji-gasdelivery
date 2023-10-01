@@ -11,7 +11,7 @@ Config.Blip = {
     },
 }
 
--- Config.Target = 'ox' -- use 'ox' for Ox_target and 'qb' for qb-target /// ///// //// //// will add support for ox later.
+Config.Target = 'ox' -- use 'ox' for Ox_target and 'qb' for qb-target 
 
 -- Config.UseMenu = true --- will add a menu option later that uses qb-menu and ox_lib menu 
 

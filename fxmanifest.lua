@@ -10,7 +10,8 @@ version '1.0.0'
 shared_scripts {
     'config.lua',
     '@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua'
+    '@PolyZone/BoxZone.lua',
+    '@ox_lib/init.lua'
 }
 client_scripts {
     'client/main.lua',
@@ -20,4 +21,5 @@ server_script 'server/main.lua'
 dependencies {
     'qb-core',
     'qb-target',
+    'ox_target'
 }
