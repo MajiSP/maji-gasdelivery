@@ -81,7 +81,27 @@ CreateThread(function()
     FreezeEntityPosition(targetped, true)
     SetEntityInvincible(targetped, true)
     
-    if Config.Target == 'qb' then
+    if Config.UseMenu == true and Config.Menu == 'qb' and Config.Target == 'qb' then
+        exports['qb-target']:AddTargetModel({pedHash}, {
+            options = {
+                {
+                    num = 1,
+                    type = "client",
+                    event = "md-opentruckermenu",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Open menu",
+                },
+              
+            },
+            distance = 2.0,
+        }) 
+    elseif Config.UseMenu == true and Config.Menu == 'ox' and Config.Target == 'ox' then
+        local options = {
+            {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Open menu", distance = 2.0,},       
+        }
+        exports.ox_target:addModel(pedHash, options)
+    end
+    if Config.Target == 'qb' and Config.UseMenu == false then
 
         exports['qb-target']:AddTargetModel({pedHash}, {
             options = {
@@ -116,7 +136,7 @@ CreateThread(function()
             },
             distance = 2.0,
         })  
-    elseif Config.Target == 'ox' then
+    elseif Config.Target == 'ox' and not Config.UseMenu then
         local options = {
             {type = "server",  name = 'op1', event = "md-checkCash", icon = 'fas fa-sign-in-alt', label = "Rent a Truck and Start Work", distance = 2.0,},
             {type = "server", event = 'md-ownedtruck', icon = 'fas fa-sign-in-alt', label = "Start Work With Your Own Truck", distance = 2.0,},
@@ -142,6 +162,103 @@ Citizen.CreateThread(function()
         AddTextComponentString(info.title)
         EndTextCommandSetBlipName(startblip)
     end
+end)
+
+--/////////////////////////////////////////////////////////////////////////////////////////////////--
+
+RegisterNetEvent("md-opentruckermenu")
+AddEventHandler("md-opentruckermenu", function()
+    exports['qb-menu']:openMenu({
+        {
+            header = "Gas man job",
+            txt = "",
+            isMenuHeader = true
+        },
+        {
+            header = "Rent a Truck and Start Work",
+            txt = "Rent a Truck and Start Work. Additional Rental fees will be taken from you.",
+            icon = "fas fa-sign-in-alt",
+            params = {
+                event = "md-checkCash",
+            }
+        },
+        {
+            header = "Start Work With Your Own Truck",
+            txt = "Start Work With Your Own Truck. only the Trailer Fees will be taken from you",
+            icon = "fas fa-sign-in-alt",
+            params = {
+                event = "md-ownedtruck",
+            }
+        },
+        {
+            header = "Get Paycheck",
+            txt = "Get Your Paycheck",
+            icon = "fas fa-money-bill-wave",
+            params = {
+                event = "GetTruckerPay",
+            }
+        },
+        {
+            header = "Restart Job",
+            txt = "Restart The Job",
+            icon = "fas fa-ban",
+            params = {
+                event = "RestartJob",
+            }
+        },
+        
+    })
+   
+end)
+
+---*******************************************-------
+RegisterNetEvent("md-opentruckermenuox")
+AddEventHandler("md-opentruckermenuox", function()
+    lib.registerContext({
+        id = 'truckermanjob',
+        title = "Trucker man Job",
+        options = {
+             {
+                title = 'Rent a Truck and Start Work',
+                description = 'Rent a Truck and Start Work. Additional Rental fees will be taken from you.',
+                arrow = false,
+                event = 'md-checkCash',
+                icon = 'truck'
+               
+            },
+            {
+                title = 'Start Work With Your Own Truck',
+                description = 'Start Work With Your Own Truck. only the Trailer Fees will be taken from you',
+                arrow = false,
+                event = 'md-ownedtruck',
+                icon = 'truck'
+               
+            },
+            {
+                title = 'Get Paycheck',
+                description = 'Get Your Paycheck',
+                arrow = false,
+                event = 'GetTruckerPay',
+                icon = 'fas fa-money-bill-wave'
+               
+            },
+            {
+                title = 'Restart Job',
+                description = 'RestartJob',
+                arrow = false,
+                event = 'Restart The Job',
+                icon = 'fas fa-ban'
+               
+            },
+            --[[ {
+                arrow = false,
+                event = 'drc_drugs:coke:progress',
+                args = { menu = data, option = "break" }
+            } ]]
+        }
+    })
+    lib.showContext('truckermanjob')
+   
 end)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--

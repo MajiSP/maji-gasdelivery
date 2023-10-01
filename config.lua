@@ -11,11 +11,11 @@ Config.Blip = {
     },
 }
 
-Config.Target = 'ox' -- use 'ox' for Ox_target and 'qb' for qb-target 
+Config.Target = 'qb' -- use 'ox' for Ox_target (you need to have ox_target installed) and 'qb' for qb-target 
 
--- Config.UseMenu = true --- will add a menu option later that uses qb-menu and ox_lib menu 
+Config.UseMenu = false --- will add a menu option later that uses qb-menu and ox_lib menu 
 
--- Config.Menu = 'ox' -- use 'ox' for Ox_lib Menu and 'qb' for qb-menu 
+Config.Menu = 'ox' -- use 'ox' for Ox_lib (you need to have ox_lib installed) Menu and 'qb' for qb-menu /// Only change this if you have 'Config.UseMenu' set to true
 
 Config.PedType = "a_m_m_ktown_01"
 
