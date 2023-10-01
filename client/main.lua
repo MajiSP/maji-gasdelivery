@@ -29,7 +29,7 @@ local src = source
 
 local trailerModels = {
     '1956216962',
-    '569305213',
+    '569305213', -- added this for the packer truck as i cant interact with the trailer if i go with my own truck  
 }
 
 
