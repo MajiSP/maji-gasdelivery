@@ -28,7 +28,7 @@ local StoredTrailer = nil
 local src = source
 
 local trailerModels = {
-    '1956216962', 
+    '1956216962'
 }
 
 
@@ -250,11 +250,7 @@ AddEventHandler("md-opentruckermenuox", function()
                 icon = 'fas fa-ban'
                
             },
-            --[[ {
-                arrow = false,
-                event = 'drc_drugs:coke:progress',
-                args = { menu = data, option = "break" }
-            } ]]
+            
         }
     })
     lib.showContext('truckermanjob')
@@ -609,7 +605,7 @@ function RefuelStation(location)
                     icon = "fas fa-gas-pump",
                     label = "Grab Fuel Line",
                     action = function()
-                       -- FreezeEntityPosition(trailerId, true)
+                        FreezeEntityPosition(trailerId, true)
                         nozzleInHand = true
                         TriggerEvent('pumpRefuel')
                     end,
@@ -629,7 +625,7 @@ function RefuelStation(location)
                     label = "Return Nozzle",
                     action = function()
                         nozzleInHand = false
-                       -- FreezeEntityPosition(trailerId, false)
+                        FreezeEntityPosition(trailerId, false)
                         TriggerEvent('ReturnNozzle')
                     end,
                     canInteract = function()
@@ -647,12 +643,12 @@ function RefuelStation(location)
         elseif Config.Target == 'ox' then
 
             local options = {
-                {event = 'pumpRefuel', icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
+                {type = "client", event = "pumpRefuel", icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
 
-                action = function()
-                    --FreezeEntityPosition(trailerId, true)
+                onSelect = function()
+                    FreezeEntityPosition(trailerId, true)
                     nozzleInHand = true
-                    TriggerEvent('pumpRefuel')
+                    --TriggerEvent('pumpRefuel')
                 end,
                 canInteract = function()
                     if not nozzleInHand then
@@ -666,11 +662,12 @@ function RefuelStation(location)
 
                 {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump', label = "Return Nozzle", distance = 5.0,
 
-                action = function()
+                onSelect = function()
                     nozzleInHand = false
                     FreezeEntityPosition(trailerId, false)
-                    TriggerEvent('ReturnNozzle')
+                   -- TriggerEvent('ReturnNozzle')
                 end,
+                
                 canInteract = function()
                     if nozzleInHand and RefuelingStation == false then
                         return true
@@ -747,13 +744,13 @@ RegisterNetEvent('pumpRefuel', function()
                     BringToStation()
                     Citizen.CreateThread(function()
                         while nozzleInHand do
-                            --FreezeEntityPosition(trailerId, true)
+                            FreezeEntityPosition(trailerId, true)
                             local currentcoords = GetEntityCoords(playerPed)
                             local dist = #(grabbednozzlecoords - currentcoords)
                             if dist > 10.0 then
                                 QBCore.Functions.Notify('Your fuel line has broken!', 'error', 5000)
                                 nozzleInHand = false
-                               -- FreezeEntityPosition(trailerId, false)
+                                FreezeEntityPosition(trailerId, false)
                                 DeleteObject(fuelnozzle2)
                                 RopeUnloadTextures()
                                 DeleteRope(Rope2)
@@ -780,7 +777,7 @@ function BringToStation()
                 icon = "fas fa-gas-pump",
                 label = "Fuel Station",
                 canInteract = function()
-                    if nozzleInHand and cooldown == 1 then
+                    if nozzleInHand and not RefuelingStation and cooldown == 1 then
                         return true
                     else
                         return false
@@ -797,7 +794,7 @@ function BringToStation()
         local options = {
             {event = 'refuelStation1', icon = 'fas fa-gas-pump',  label = "Fuel Station", distance = 5.0,
             canInteract = function()
-                if nozzleInHand and cooldown == 1 then
+                if nozzleInHand and  not RefuelingStation and cooldown == 1 then
                     return true
                 else
                     return false
@@ -882,7 +879,7 @@ CreateThread(function()
                     type = "client",
                     event = "refuelTanker",
                     icon = "fas fa-gas-pump",
-                    label = "grab nozzle",
+                    label = "Grab nozzle",
                     canInteract = function()
                         if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
                             return true
@@ -894,7 +891,7 @@ CreateThread(function()
                     type = "client",
                     event = "ReturnNozzle",
                     icon = "fas fa-hand",
-                    label = "return nozzle",
+                    label = "Return nozzle",
                     canInteract = function()
                         if nozzleInHand then
                             return true
@@ -907,7 +904,7 @@ CreateThread(function()
         elseif Config.Target == 'ox' then
 
             local options = {
-                {type = "client", event = 'refuelTanker', icon = 'fas fa-gas-pump', label = "grab nozzle", distance = 2.0,
+                {type = "client", event = 'refuelTanker', icon = 'fas fa-gas-pump', label = "Grab nozzle", distance = 2.0,
                 canInteract = function()
                     if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
                         return true
