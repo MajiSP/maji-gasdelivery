@@ -89,7 +89,7 @@ CreateThread(function()
                     type = "client",
                     event = "md-opentruckermenu",
                     icon = "fas fa-sign-in-alt",
-                    label = "Open menu",
+                    label = "Talk To Boss!",
                 },
               
             },
@@ -97,7 +97,7 @@ CreateThread(function()
         }) 
     elseif Config.UseMenu == true and Config.Menu == 'ox' and Config.Target == 'ox' then
         local options = {
-            {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Open menu", distance = 2.0,},       
+            {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
         }
         exports.ox_target:addModel(pedHash, options)
     end
