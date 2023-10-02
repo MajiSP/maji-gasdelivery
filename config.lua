@@ -13,7 +13,7 @@ Config.Blip = {
 
 Config.Target = 'ox' -- use 'ox' for Ox_target (you need to have ox_target installed) and 'qb' for qb-target
 
-Config.UseMenu = true --- Set this to "true" if you like to use the menu to interact with the Boss 
+Config.UseMenu = false --- Set this to "true" if you like to use the menu to interact with the Boss 
 
 Config.Menu = 'ox' -- use 'ox' for Ox_lib (you need to have ox_lib installed) Menu and 'qb' for qb-menu /// Only change this if you have 'Config.UseMenu' set to true
 
