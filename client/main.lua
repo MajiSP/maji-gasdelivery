@@ -609,7 +609,7 @@ function RefuelStation(location)
                     icon = "fas fa-gas-pump",
                     label = "Grab Fuel Line",
                     action = function()
-                       -- FreezeEntityPosition(trailerId, true)
+                        FreezeEntityPosition(trailerId, true)
                         nozzleInHand = true
                         TriggerEvent('pumpRefuel')
                     end,
@@ -629,7 +629,7 @@ function RefuelStation(location)
                     label = "Return Nozzle",
                     action = function()
                         nozzleInHand = false
-                       -- FreezeEntityPosition(trailerId, false)
+                        FreezeEntityPosition(trailerId, false)
                         TriggerEvent('ReturnNozzle')
                     end,
                     canInteract = function()
@@ -650,7 +650,7 @@ function RefuelStation(location)
                 {event = 'pumpRefuel', icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
 
                 action = function()
-                    --FreezeEntityPosition(trailerId, true)
+                    FreezeEntityPosition(trailerId, true)
                     nozzleInHand = true
                     TriggerEvent('pumpRefuel')
                 end,
@@ -747,13 +747,13 @@ RegisterNetEvent('pumpRefuel', function()
                     BringToStation()
                     Citizen.CreateThread(function()
                         while nozzleInHand do
-                            --FreezeEntityPosition(trailerId, true)
+                            FreezeEntityPosition(trailerId, true)
                             local currentcoords = GetEntityCoords(playerPed)
                             local dist = #(grabbednozzlecoords - currentcoords)
                             if dist > 10.0 then
                                 QBCore.Functions.Notify('Your fuel line has broken!', 'error', 5000)
                                 nozzleInHand = false
-                               -- FreezeEntityPosition(trailerId, false)
+                                FreezeEntityPosition(trailerId, false)
                                 DeleteObject(fuelnozzle2)
                                 RopeUnloadTextures()
                                 DeleteRope(Rope2)
