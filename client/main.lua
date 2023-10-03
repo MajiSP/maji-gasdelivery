@@ -28,7 +28,7 @@ local StoredTrailer = nil
 local src = source
 
 local trailerModels = {
-    '1956216962'
+    '1956216962',
 }
 
 
@@ -170,7 +170,7 @@ RegisterNetEvent("md-opentruckermenu")
 AddEventHandler("md-opentruckermenu", function()
     exports['qb-menu']:openMenu({
         {
-            header = "Gas man job",
+            header = "Fuel Delivery Job",
             txt = "",
             isMenuHeader = true
         },
@@ -216,7 +216,7 @@ RegisterNetEvent("md-opentruckermenuox")
 AddEventHandler("md-opentruckermenuox", function()
     lib.registerContext({
         id = 'truckermanjob',
-        title = "Trucker man Job",
+        title = "Fuel Delivery Job",
         options = {
              {
                 title = 'Rent a Truck and Start Work',
@@ -454,6 +454,9 @@ end)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
+
+
+
 function BringToTruck()
     print("cooldown: "..cooldown)
     CreateThread(function()
@@ -462,13 +465,13 @@ function BringToTruck()
             Wait(500)
             local playerPed = PlayerPedId()
             local playerCoords = GetEntityCoords(playerPed)
-
             if myBoxZone:isPointInside(playerCoords) then
                 if not insideZone then
                     insideZone = true
                     if truck == 1 and cooldown == 0 then
                         QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
                         if Config.Target == 'qb' then
+                            
                             exports['qb-target']:AddTargetModel(trailerModels, {
                                 options = {
                                 {
@@ -486,7 +489,7 @@ function BringToTruck()
                             },
                             distance = 5.0,
                             })
-                        elseif Config.Target == 'ox' then
+                        elseif Config.Target == 'ox' and stationsRefueled < 1 then
 
                             local options = {
                                 {event = 'FuelTruck', icon = 'fas fa-gas-pump', label = "Fuel Truck", distance = 5.0,
@@ -579,6 +582,7 @@ cache_location = randomLocation
     FreezeEntityPosition(pumpProp, true)
 end
 
+
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 function SendBlipToNewLocation(location)
@@ -640,15 +644,15 @@ function RefuelStation(location)
             distance = 5.0
         })
           
-        elseif Config.Target == 'ox' then
+        elseif Config.Target == 'ox' and stationsRefueled < 1 then
 
             local options = {
-                {type = "client", event = "pumpRefuel", icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
+                {event = 'pumpRefuel', icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
 
                 onSelect = function()
                     FreezeEntityPosition(trailerId, true)
                     nozzleInHand = true
-                    --TriggerEvent('pumpRefuel')
+                    TriggerEvent('pumpRefuel')
                 end,
                 canInteract = function()
                     if not nozzleInHand then
@@ -660,12 +664,12 @@ function RefuelStation(location)
                 
                 },
 
-                {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump', label = "Return Nozzle", distance = 5.0,
+                {type = "client", icon = 'fas fa-gas-pump', label = "Return Nozzle", distance = 5.0,
 
                 onSelect = function()
                     nozzleInHand = false
                     FreezeEntityPosition(trailerId, false)
-                   -- TriggerEvent('ReturnNozzle')
+                    TriggerEvent('ReturnNozzle')
                 end,
                 
                 canInteract = function()
@@ -789,15 +793,15 @@ function BringToStation()
     })
 
     
-       elseif Config.Target == 'ox' then
+       elseif Config.Target == 'ox' and stationsRefueled < 1 then
 
         local options = {
             {event = 'refuelStation1', icon = 'fas fa-gas-pump',  label = "Fuel Station", distance = 5.0,
             canInteract = function()
                 if nozzleInHand and  not RefuelingStation and cooldown == 1 then
                     return true
-                else
-                    return false
+                 else
+                    return false 
                 end
             end
             },
@@ -899,7 +903,7 @@ CreateThread(function()
                     end,
                 },
             },
-            distance = 2.0
+            distance = 5.0
         })
         elseif Config.Target == 'ox' then
 
