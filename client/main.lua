@@ -3,6 +3,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local props = {
     'prop_storagetank_02b',
 }
+
 local refuelProp = 'prop_oil_wellhead_06'
 
 local coords = vector3(1733.08, -1556.68, 112.66)
@@ -28,7 +29,9 @@ local StoredTrailer = nil
 local src = source
 
 local trailerModels = {
-    '1956216962', 
+    '1956216962',
+    '3564062519',
+    '-730904777',
 }
 
 local myBoxZone = BoxZone:Create(vector3(1694.6, -1460.75, 112.92), 26.8, 15, {
@@ -192,7 +195,7 @@ RegisterNetEvent("md-opentruckermenu")
 AddEventHandler("md-opentruckermenu", function()
     exports['qb-menu']:openMenu({
         {
-            header = "Gas man job",
+            header = "Gas Delivery Job",
             txt = "",
             isMenuHeader = true
         },
@@ -272,11 +275,6 @@ AddEventHandler("md-opentruckermenuox", function()
                 icon = 'fas fa-ban'
                
             },
-            --[[ {
-                arrow = false,
-                event = 'drc_drugs:coke:progress',
-                args = { menu = data, option = "break" }
-            } ]]
         }
     })
     lib.showContext('truckermanjob')
@@ -291,7 +289,9 @@ AddEventHandler("spawnTruck", function()
         RemoveBlip(blip)
         DeleteVehicle(StoredTruck)
         TruckNetID = NetworkGetNetworkIdFromEntity(veh)
-        print("truck ID: "..TruckNetID)
+        if Config.Debug == true then
+            print("truck ID: "..TruckNetID)
+        end
         SetVehicleNumberPlateText(veh, 'TRUCK' .. tostring(math.random(1000, 9999)))
         SetEntityHeading(veh, heading)
 
@@ -313,7 +313,9 @@ AddEventHandler("spawnTruck", function()
     QBCore.Functions.SpawnVehicle(Config.TrailerToSpawn, function(veh1)
         DeleteVehicle(StoredTrailer)
         TrailerNetID = NetworkGetNetworkIdFromEntity(veh1)
-        print("trailer ID: "..TrailerNetID)
+        if Config.Debug == true then
+            print("trailer ID: "..TrailerNetID)
+        end
         SetVehicleNumberPlateText(veh1, 'TRUCKER')
         SetEntityHeading(veh1, heading)
 
@@ -328,7 +330,9 @@ AddEventHandler("spawnTruck2", function()
     QBCore.Functions.SpawnVehicle(Config.TrailerToSpawn, function(veh2)
         DeleteVehicle(StoredTrailer)
         TrailerNetID = NetworkGetNetworkIdFromEntity(veh2)
-        print("trailer ID: "..TrailerNetID)
+        if Config.Debug == true then
+            print("trailer ID: "..TrailerNetID)
+        end
         SetVehicleNumberPlateText(veh2, 'TRUCKER')
         SetEntityHeading(veh2, heading)
 
@@ -360,7 +364,9 @@ RegisterNetEvent('TrailerBlip', function()
                 if trailer == 1 then
                     RemoveBlip(blip)
                     TriggerEvent('spawnFlashingBlip')
-                    print("trailer connected")
+                    if Config.Debug == true then
+                        print("trailer connected")
+                    end
                     break
                 end
             end
@@ -392,7 +398,9 @@ function GetPump(coordss)
 		local currentPumpModel = props[i]
 		prop = GetClosestObjectOfType(coordss.x, coordss.y, coordss.z, 3.0, currentPumpModel, true, true, true)
 		propCoords = GetEntityCoords(prop)
-		print("Gas Pump: ".. prop,  "Pump Coords: "..propCoords)
+        if Config.Debug == true then
+		    print("Gas Pump: ".. prop,  "Pump Coords: "..propCoords)
+        end
 		if prop ~= 0 then break end
 	end
 	return propCoords, prop
@@ -401,7 +409,9 @@ end
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 RegisterNetEvent('refuelTanker', function()
-    print("blip: ", blip)
+    if Config.Debug == true then
+        print("blip: ", blip)
+    end
 
     local vehicle = GetLastDrivenVehicle()
     local trailer = 0
@@ -481,7 +491,9 @@ end)
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 function BringToTruck()
-    print("cooldown: "..cooldown)
+    if Config.Debug == true then
+        print("cooldown: "..cooldown)
+    end
     CreateThread(function()
         local insideZone = false
         while true do
@@ -531,12 +543,16 @@ function BringToTruck()
 
                         
                     end
-                    print("Player has entered the box zone")
+                    if Config.Debug == true then
+                        print("Player has entered the box zone")
+                    end
                 end
             else
                 if insideZone then
                     insideZone = false
-                    print("Player has left the box zone")
+                    if Config.Debug == true then
+                        print("Player has left the box zone")
+                    end
                 end
             end
         end
@@ -588,7 +604,9 @@ local function GetRandomLocation()
     end
 end
 
-print(GetRandomLocation())
+if Config.Debug == true then
+    print(GetRandomLocation())
+end
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
@@ -724,9 +742,13 @@ RegisterNetEvent('pumpRefuel', function()
             trailerId = attachedTrailer
 
             if trailerId ~= 0 then
-                print("The last trailer attached to the vehicle the player was in has ID: " .. attachedTrailer)
+                if Config.Debug == true then
+                    print("The last trailer attached to the vehicle the player was in has ID: " .. attachedTrailer)
+                end
                 local trailerCoords = GetEntityCoords(trailerId)
-                print("The trailer with ID " .. trailerId .. " has coordinates: " .. tostring(trailerCoords))
+                if Config.Debug == true then
+                    print("The trailer with ID " .. trailerId .. " has coordinates: " .. tostring(trailerCoords))
+                end
 
                 if not hasTrailer then
                     QBCore.Functions.Notify('You need to get your tanker!', 'error', 5000)
@@ -793,7 +815,9 @@ end)
 
 function BringToStation()
     QBCore.Functions.Notify('Go fuel up the station!', 'success', 5000)
-    print("cooldown: "..cooldown)
+    if Config.Debug == true then
+        print("cooldown: "..cooldown)
+    end
     if Config.Target == 'qb' then
         exports['qb-target']:AddTargetModel(refuelProp, {
             options = {
