@@ -31,8 +31,6 @@ local trailerModels = {
     '1956216962', 
 }
 
-
-
 local myBoxZone = BoxZone:Create(vector3(1694.6, -1460.75, 112.92), 26.8, 15, {
     heading = 345,
     debugPoly = false
@@ -80,70 +78,94 @@ CreateThread(function()
     SetPedCanPlayInjuredAnims(targetped, false)
     FreezeEntityPosition(targetped, true)
     SetEntityInvincible(targetped, true)
-    
-    if Config.UseMenu == true and Config.Menu == 'qb' and Config.Target == 'qb' then
-        exports['qb-target']:AddTargetModel({pedHash}, {
-            options = {
-                {
-                    num = 1,
-                    type = "client",
-                    event = "md-opentruckermenu",
-                    icon = "fas fa-sign-in-alt",
-                    label = "Talk To Boss!",
-                },
-              
-            },
-            distance = 2.0,
-        }) 
-    elseif Config.UseMenu == true and Config.Menu == 'ox' and Config.Target == 'ox' then
-        local options = {
-            {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
-        }
-        exports.ox_target:addModel(pedHash, options)
-    end
-    if Config.Target == 'qb' and Config.UseMenu == false then
 
-        exports['qb-target']:AddTargetModel({pedHash}, {
-            options = {
-                {
-                    num = 1,
-                    type = "server",
-                    event = "md-checkCash",
-                    icon = "fas fa-sign-in-alt",
-                    label = "Rent a Truck and Start Work",
+    if Config.UseMenu == true then
+        if Config.Menu == 'qb' and Config.Target == 'qb' then
+            exports['qb-target']:AddTargetModel({pedHash}, {
+                options = {
+                    {
+                        num = 1,
+                        type = "client",
+                        event = "md-opentruckermenu",
+                        icon = "fas fa-sign-in-alt",
+                        label = "Talk To Boss!",
+                    },
+                  
                 },
-                {
-                    num = 2,
-                    type = "server",
-                    event = "md-ownedtruck",
-                    icon = "fas fa-sign-in-alt",
-                    label = "Start Work With Your Own Truck",
+                distance = 2.0,
+            })
+
+        elseif Config.Menu == 'ox' and Config.Target == 'ox' then
+            local options = {
+                {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
+            }
+            exports.ox_target:addModel(pedHash, options)
+
+        elseif Config.Menu == 'qb' and Config.Target == 'ox' then
+            local options = {
+                {type = "client", event = "md-opentruckermenu", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
+            }
+            exports.ox_target:addModel(pedHash, options)
+
+        elseif Config.Menu == 'ox' and Config.Target == 'qb' then
+            exports['qb-target']:AddTargetModel({pedHash}, {
+                options = {
+                    {
+                        num = 1,
+                        type = "client",
+                        event = "md-opentruckermenuox",
+                        icon = "fas fa-sign-in-alt",
+                        label = "Talk To Boss!",
+                    },
+                  
                 },
-                {
-                    num = 3,
-                    type = "client",
-                    event = "GetTruckerPay",
-                    icon = "fas fa-money-bill-wave",
-                    label = "Get Paycheck",
+                distance = 2.0,
+            })
+        end
+    else
+        if Config.Target == 'qb' then
+            exports['qb-target']:AddTargetModel({pedHash}, {
+                options = {
+                    {
+                        num = 1,
+                        type = "server",
+                        event = "md-checkCash",
+                        icon = "fas fa-sign-in-alt",
+                        label = "Rent a Truck and Start Work",
+                    },
+                    {
+                        num = 2,
+                        type = "server",
+                        event = "md-ownedtruck",
+                        icon = "fas fa-sign-in-alt",
+                        label = "Start Work With Your Own Truck",
+                    },
+                    {
+                        num = 3,
+                        type = "client",
+                        event = "GetTruckerPay",
+                        icon = "fas fa-money-bill-wave",
+                        label = "Get Paycheck",
+                    },
+                    {
+                        num = 4,
+                        type = "client",
+                        event = "RestartJob",
+                        icon = "fas fa-ban",
+                        label = "Restart Job",
+                    },
                 },
-                {
-                    num = 4,
-                    type = "client",
-                    event = "RestartJob",
-                    icon = "fas fa-ban",
-                    label = "Restart Job",
-                },
-            },
-            distance = 2.0,
-        })  
-    elseif Config.Target == 'ox' and not Config.UseMenu then
-        local options = {
-            {type = "server",  name = 'op1', event = "md-checkCash", icon = 'fas fa-sign-in-alt', label = "Rent a Truck and Start Work", distance = 2.0,},
-            {type = "server", event = 'md-ownedtruck', icon = 'fas fa-sign-in-alt', label = "Start Work With Your Own Truck", distance = 2.0,},
-            {type = "client", event = 'GetTruckerPay', icon = 'fas fa-sign-in-alt', label = "Get Paycheck", distance = 2.0,},
-            {type = "client", event = 'RestartJob', icon = 'fas fa-sign-in-alt', label = "Restart Job", distance = 2.0,},
-        }
-        exports.ox_target:addModel(pedHash, options)
+                distance = 2.0,
+            })
+        elseif Config.Target == 'ox' then
+            local options = {
+                {type = "server",  name = 'op1', event = "md-checkCash", icon = 'fas fa-sign-in-alt', label = "Rent a Truck and Start Work", distance = 2.0,},
+                {type = "server", event = 'md-ownedtruck', icon = 'fas fa-sign-in-alt', label = "Start Work With Your Own Truck", distance = 2.0,},
+                {type = "client", event = 'GetTruckerPay', icon = 'fas fa-sign-in-alt', label = "Get Paycheck", distance = 2.0,},
+                {type = "client", event = 'RestartJob', icon = 'fas fa-sign-in-alt', label = "Restart Job", distance = 2.0,},
+            }
+            exports.ox_target:addModel(pedHash, options)
+        end
     end
 end)
 
