@@ -1,5 +1,7 @@
 Config = {}
 
+Config.Debug = false
+
 Config.Blip = {
     {
     title = "Fuel Delivery",
