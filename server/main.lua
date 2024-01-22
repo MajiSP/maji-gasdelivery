@@ -6,7 +6,9 @@ AddEventHandler('md-checkCash', function()
     local Player = QBCore.Functions.GetPlayer(src)
     local moneyType = Config.PayType
     local balance = Player.Functions.GetMoney(moneyType)
-    print(moneyType)
+    if Config.Debug == true then
+        print(moneyType)
+    end
     if balance >= Config.TruckPrice then
         if moneyType == 'cash' then
             Player.Functions.RemoveMoney(moneyType, Config.TruckPrice, "gas-delivery-truck")
@@ -27,7 +29,9 @@ AddEventHandler('md-ownedtruck', function()
     local Player = QBCore.Functions.GetPlayer(src)
     local moneyType = Config.PayType
     local balance = Player.Functions.GetMoney(moneyType)
-    print(moneyType)
+    if Config.Debug == true then
+        print(moneyType)
+    end
      if balance >= Config.TankPrice then
         if moneyType == 'cash' then
             Player.Functions.RemoveMoney(moneyType, Config.TankPrice, "gas-Tank-truck")
