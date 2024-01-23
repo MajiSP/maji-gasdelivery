@@ -18,7 +18,6 @@ By reporting issues, you help improve the fuel delivery job for all players and 
 
 # DEPENDENCIES
 
-- ox_lib and ox_target if you will use that
 - qb-core
 - qb-target
 
@@ -26,9 +25,6 @@ Place this file inside your [standalone] folder and start the script.
 
 
 ## PLACE THE OGG FILES FROM SOUNDS TO YOUR INTERACT SOUNDS SCRIPT FOUND IN STANDALONE
-
-## IF AND ONLY IF YOU WILL USE THE MENU THEN SET BOTH TARGET AND MENU TO THE SAME (OX_TARGET + OX_LIB MENU // QB_TARGET + QB_MENU)  
-
 
 # Feel free to donate to my Ko-fi to help support future civ jobs :) 
 ## https://ko-fi.com/majidev
