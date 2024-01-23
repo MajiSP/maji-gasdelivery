@@ -96,33 +96,6 @@ CreateThread(function()
                 },
                 distance = 2.0,
             })
-
-        elseif Config.Menu == 'ox' and Config.Target == 'ox' then
-            local options = {
-                {type = "client", event = "md-opentruckermenuox", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
-            }
-            exports.ox_target:addModel(pedHash, options)
-
-        elseif Config.Menu == 'qb' and Config.Target == 'ox' then
-            local options = {
-                {type = "client", event = "md-opentruckermenu", icon = 'fas fa-sign-in-alt', label = "Talk To Boss!", distance = 2.0},       
-            }
-            exports.ox_target:addModel(pedHash, options)
-
-        elseif Config.Menu == 'ox' and Config.Target == 'qb' then
-            exports['qb-target']:AddTargetModel({pedHash}, {
-                options = {
-                    {
-                        num = 1,
-                        type = "client",
-                        event = "md-opentruckermenuox",
-                        icon = "fas fa-sign-in-alt",
-                        label = "Talk To Boss!",
-                    },
-                  
-                },
-                distance = 2.0,
-            })
         end
     else
         if Config.Target == 'qb' then
@@ -159,14 +132,6 @@ CreateThread(function()
                 },
                 distance = 2.0,
             })
-        elseif Config.Target == 'ox' then
-            local options = {
-                {type = "server",  name = 'op1', event = "md-checkCash", icon = 'fas fa-sign-in-alt', label = "Rent a Truck and Start Work", distance = 2.0,},
-                {type = "server", event = 'md-ownedtruck', icon = 'fas fa-sign-in-alt', label = "Start Work With Your Own Truck", distance = 2.0,},
-                {type = "client", event = 'GetTruckerPay', icon = 'fas fa-sign-in-alt', label = "Get Paycheck", distance = 2.0,},
-                {type = "client", event = 'RestartJob', icon = 'fas fa-sign-in-alt', label = "Restart Job", distance = 2.0,},
-            }
-            exports.ox_target:addModel(pedHash, options)
         end
     end
 end)
@@ -234,53 +199,6 @@ AddEventHandler("md-opentruckermenu", function()
     })
    
 end)
-
----*******************************************-------
-RegisterNetEvent("md-opentruckermenuox")
-AddEventHandler("md-opentruckermenuox", function()
-    lib.registerContext({
-        id = 'truckermanjob',
-        title = "Trucker man Job",
-        options = {
-             {
-                title = 'Rent a Truck and Start Work',
-                description = 'Rent a Truck and Start Work. Additional Rental fees will be taken from you.',
-                arrow = false,
-                event = 'md-checkCash',
-                icon = 'truck'
-               
-            },
-            {
-                title = 'Start Work With Your Own Truck',
-                description = 'Start Work With Your Own Truck. only the Trailer Fees will be taken from you',
-                arrow = false,
-                event = 'md-ownedtruck',
-                icon = 'truck'
-               
-            },
-            {
-                title = 'Get Paycheck',
-                description = 'Get Your Paycheck',
-                arrow = false,
-                event = 'GetTruckerPay',
-                icon = 'fas fa-money-bill-wave'
-               
-            },
-            {
-                title = 'Restart Job',
-                description = 'RestartJob',
-                arrow = false,
-                event = 'Restart The Job',
-                icon = 'fas fa-ban'
-               
-            },
-        }
-    })
-    lib.showContext('truckermanjob')
-   
-end)
-
---/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 RegisterNetEvent("spawnTruck")
 AddEventHandler("spawnTruck", function()
@@ -524,24 +442,7 @@ function BringToTruck()
                             },
                             distance = 5.0,
                             })
-                        elseif Config.Target == 'ox' then
-
-                            local options = {
-                                {type = "client", event = 'FuelTruck', icon = 'fas fa-gas-pump', label = "Fuel Truck", distance = 5.0,
-                                canInteract = function()
-                                    if nozzleInHand and cooldown == 0 then
-                                        return true
-                                    else
-                                        return false
-                                    end
-                                end
-                                },
-                            }
-                            exports.ox_target:addModel(trailerModels, options)
-
-                        end
-
-                        
+			end
                     end
                     if Config.Debug == true then
                         print("Player has entered the box zone")
@@ -683,47 +584,7 @@ function RefuelStation(location)
             },
             distance = 5.0
         })
-          
-        elseif Config.Target == 'ox' then
-
-            local options = {
-                {type = "client", event = "pumpRefuel", icon = 'fas fa-gas-pump', label = "Grab Fuel Line", distance = 5.0,
-
-                action = function()
-                    FreezeEntityPosition(trailerId, true)
-                    nozzleInHand = true
-                    TriggerEvent('pumpRefuel')
-                end,
-                canInteract = function()
-                    if not nozzleInHand then
-                        return true
-                    else
-                        return false
-                    end
-                end,
-                
-                },
-
-                {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump', label = "Return Nozzle", distance = 5.0,
-
-                action = function()
-                    nozzleInHand = false
-                    FreezeEntityPosition(trailerId, false)
-                    TriggerEvent('ReturnNozzle')
-                end,
-                canInteract = function()
-                    if nozzleInHand and RefuelingStation == false then
-                        return true
-                    else
-                        return false
-                    end
-                end,
-                },
-            }
-            exports.ox_target:addModel(trailerModels, options)
-
         end
-         
     end
 end
 
@@ -836,24 +697,7 @@ function BringToStation()
         },
         distance = 5.0,
     })
-
-    
-       elseif Config.Target == 'ox' then
-
-        local options = {
-            {event = 'refuelStation1', icon = 'fas fa-gas-pump',  label = "Fuel Station", distance = 5.0,
-            canInteract = function()
-                if nozzleInHand and cooldown == 1 then
-                    return true
-                else
-                    return false
-                end
-            end
-            },
-        }
-        exports.ox_target:addModel(refuelProp, options)
-
-       end
+     end
 end
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
@@ -950,28 +794,7 @@ CreateThread(function()
             },
             distance = 2.0
         })
-        elseif Config.Target == 'ox' then
-
-            local options = {
-                {type = "client", event = 'refuelTanker', icon = 'fas fa-gas-pump', label = "grab nozzle", distance = 2.0,
-                canInteract = function()
-                    if not IsPedInAnyVehicle(PlayerPedId()) and not nozzleInHand and cooldown == 0 then
-                        return true
-                    end
-                end,
-                },
-
-                {type = "client", event = 'ReturnNozzle', icon = 'fas fa-gas-pump',  label = "return nozzle", distance = 2.0,
-                canInteract = function()
-                    if nozzleInHand then
-                        return true
-                    end
-                end,
-                },
-            }
-            exports.ox_target:addModel(props, options)
     end
- 
 end)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
