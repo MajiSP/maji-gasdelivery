@@ -30,8 +30,7 @@ local src = source
 
 local trailerModels = {
     '1956216962',
-    '3564062519',
-    '-730904777',
+    '3564062519'
 }
 
 local myBoxZone = BoxZone:Create(vector3(1694.6, -1460.75, 112.92), 26.8, 15, {
