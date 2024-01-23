@@ -506,42 +506,49 @@ function BringToTruck()
                     insideZone = true
                     if truck == 1 and cooldown == 0 then
                         QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
-                        if Config.Target == 'qb' then
-                            exports['qb-target']:AddTargetModel(trailerModels, {
-                                options = {
-                                {
-                                    event = "FuelTruck",
-                                    icon = "fas fa-gas-pump",
-                                    label = "Fuel Truck",
-                                    canInteract = function()
-                                        if nozzleInHand and cooldown == 0 then
-                                            return true
-                                        else
-                                            return false
+                        local vehicle = GetLastDrivenVehicle()
+                        local trailer = 0
+                        local hasTrailer, trailerHandle = GetVehicleTrailerVehicle(vehicle, trailer)
+                        if hasTrailer then
+                            if Config.Target == 'qb' then
+                                exports['qb-target']:AddTargetModel(trailerModels, {
+                                    options = {
+                                        {
+                                            event = "FuelTruck",
+                                            icon = "fas fa-gas-pump",
+                                            label = "Fuel Truck",
+                                            canInteract = function()
+                                                if nozzleInHand and cooldown == 0 then
+                                                    return true
+                                                else
+                                                    return false
+                                                end
+                                            end
+                                        },
+                                    },
+                                    distance = 5.0,
+                                })
+                            elseif Config.Target == 'ox' then
+                                local options = {
+                                    {
+                                        event = 'FuelTruck',
+                                        icon = 'fas fa-gas-pump',
+                                        label = "Fuel Truck",
+                                        distance = 5.0,
+                                        canInteract = function()
+                                            if nozzleInHand and cooldown == 0 then
+                                                return true
+                                            else
+                                                return false
+                                            end
                                         end
-                                    end
-                                },
-                            },
-                            distance = 5.0,
-                            })
-                        elseif Config.Target == 'ox' then
-
-                            local options = {
-                                {event = 'FuelTruck', icon = 'fas fa-gas-pump', label = "Fuel Truck", distance = 5.0,
-                                canInteract = function()
-                                    if nozzleInHand and cooldown == 0 then
-                                        return true
-                                    else
-                                        return false
-                                    end
-                                end
-                                },
-                            }
-                            exports.ox_target:addModel(trailerModels, options)
-
+                                    },
+                                }
+                                exports.ox_target:addModel(trailerModels, options)
+                            end
+                        else
+                            QBCore.Functions.Notify('You need to get your tanker!', 'error', 5000)
                         end
-
-                        
                     end
                     if Config.Debug == true then
                         print("Player has entered the box zone")
