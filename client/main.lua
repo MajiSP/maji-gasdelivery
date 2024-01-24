@@ -424,7 +424,9 @@ function BringToTruck()
                     if truck == 1 and cooldown == 0 then
                         QBCore.Functions.Notify('Go fuel up the tanker!', 'success', 5000)
                         if Config.Target == 'qb' then
-                            exports['qb-target']:AddTargetModel(trailerModels, {
+                            for _, model in ipairs(trailerModels) do
+                                local modelHash = tonumber(model)
+                                exports['qb-target']:AddTargetModel({modelHash}, {
                                 options = {
                                 {
                                     type = "client",
@@ -442,7 +444,8 @@ function BringToTruck()
                             },
                             distance = 5.0,
                             })
-			end
+                            end
+			            end
                     end
                     if Config.Debug == true then
                         print("Player has entered the box zone")
@@ -542,48 +545,51 @@ function RefuelStation(location)
     SetEntityAsMissionEntity(refuelProp1, true, true)
     if cooldown == 1 then
         if Config.Target == 'qb' then
-            exports['qb-target']:AddTargetModel(trailerModels, {
-                options = {
-                {
-                    num = 1,
-                    event = "pumpRefuel",
-                    icon = "fas fa-gas-pump",
-                    label = "Grab Fuel Line",
-                    action = function()
-                        FreezeEntityPosition(trailerId, true)
-                        nozzleInHand = true
-                        TriggerEvent('pumpRefuel')
-                    end,
-                    canInteract = function()
-                        if not nozzleInHand then
-                            return true
-                        else
-                            return false
+            for _, model in ipairs(trailerModels) do
+                local modelHash = tonumber(model)
+                exports['qb-target']:AddTargetModel({modelHash}, {
+                    options = {
+                    {
+                        num = 1,
+                        event = "pumpRefuel",
+                        icon = "fas fa-gas-pump",
+                        label = "Grab Fuel Line",
+                        action = function()
+                            FreezeEntityPosition(trailerId, true)
+                            nozzleInHand = true
+                            TriggerEvent('pumpRefuel')
+                        end,
+                        canInteract = function()
+                            if not nozzleInHand then
+                                return true
+                            else
+                                return false
+                            end
                         end
-                    end
+                    },
+                    {
+                        num = 2,
+                        type = "client",
+                        event = "ReturnNozzle",
+                        icon = "fas fa-hand",
+                        label = "Return Nozzle",
+                        action = function()
+                            nozzleInHand = false
+                            FreezeEntityPosition(trailerId, false)
+                            TriggerEvent('ReturnNozzle')
+                        end,
+                        canInteract = function()
+                            if nozzleInHand and RefuelingStation == false then
+                                return true
+                            else
+                                return false
+                            end
+                        end,
+                    },
                 },
-                {
-                    num = 2,
-                    type = "client",
-                    event = "ReturnNozzle",
-                    icon = "fas fa-hand",
-                    label = "Return Nozzle",
-                    action = function()
-                        nozzleInHand = false
-                        FreezeEntityPosition(trailerId, false)
-                        TriggerEvent('ReturnNozzle')
-                    end,
-                    canInteract = function()
-                        if nozzleInHand and RefuelingStation == false then
-                            return true
-                        else
-                            return false
-                        end
-                    end,
-                },
-            },
-            distance = 5.0
-        })
+                distance = 5.0
+            })
+            end
         end
     end
 end
