@@ -257,6 +257,7 @@ AddEventHandler("spawnTruck2", function()
         StoredTrailer = NetworkGetEntityFromNetworkId(TrailerNetID)
     end, tankerCoords, heading, true, true)
 end)
+
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 RegisterNetEvent('TrailerBlip', function()
@@ -543,52 +544,60 @@ function RefuelStation(location)
     refuelProp1 = CreateObject(refuelProp, location.x, location.y, location.z-1, true, false, false)
     FreezeEntityPosition(refuelProp1, true)
     SetEntityAsMissionEntity(refuelProp1, true, true)
-    if cooldown == 1 then
-        if Config.Target == 'qb' then
-            for _, model in ipairs(trailerModels) do
-                local modelHash = tonumber(model)
-                exports['qb-target']:AddTargetModel({modelHash}, {
-                    options = {
-                    {
-                        num = 1,
-                        event = "pumpRefuel",
-                        icon = "fas fa-gas-pump",
-                        label = "Grab Fuel Line",
-                        action = function()
-                            FreezeEntityPosition(trailerId, true)
-                            nozzleInHand = true
-                            TriggerEvent('pumpRefuel')
-                        end,
-                        canInteract = function()
-                            if not nozzleInHand then
-                                return true
-                            else
-                                return false
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed)
+
+    local distance = GetDistanceBetweenCoords(playerCoords.x, playerCoords.y, playerCoords.z, location.x, location.y, location.z, true)
+
+    if distance <= 5.0 then
+
+        if cooldown == 1 then
+            if Config.Target == 'qb' then
+                for _, model in ipairs(trailerModels) do
+                    local modelHash = tonumber(model)
+                    exports['qb-target']:AddTargetModel({modelHash}, {
+                        options = {
+                        {
+                            num = 1,
+                            event = "pumpRefuel",
+                            icon = "fas fa-gas-pump",
+                            label = "Grab Fuel Line",
+                            action = function()
+                                FreezeEntityPosition(trailerId, true)
+                                nozzleInHand = true
+                                TriggerEvent('pumpRefuel')
+                            end,
+                            canInteract = function()
+                                if not nozzleInHand then
+                                    return true
+                                else
+                                    return false
+                                end
                             end
-                        end
+                        },
+                        {
+                            num = 2,
+                            type = "client",
+                            event = "ReturnNozzle",
+                            icon = "fas fa-hand",
+                            label = "Return Nozzle",
+                            action = function()
+                                nozzleInHand = false
+                                FreezeEntityPosition(trailerId, false)
+                                TriggerEvent('ReturnNozzle')
+                            end,
+                            canInteract = function()
+                                if nozzleInHand and RefuelingStation == false then
+                                    return true
+                                else
+                                    return false
+                                end
+                            end,
+                        },
                     },
-                    {
-                        num = 2,
-                        type = "client",
-                        event = "ReturnNozzle",
-                        icon = "fas fa-hand",
-                        label = "Return Nozzle",
-                        action = function()
-                            nozzleInHand = false
-                            FreezeEntityPosition(trailerId, false)
-                            TriggerEvent('ReturnNozzle')
-                        end,
-                        canInteract = function()
-                            if nozzleInHand and RefuelingStation == false then
-                                return true
-                            else
-                                return false
-                            end
-                        end,
-                    },
-                },
-                distance = 5.0
-            })
+                    distance = 5.0
+                })
+                end
             end
         end
     end
@@ -826,7 +835,6 @@ RegisterNetEvent('refuelStation1', function()
                 TriggerServerEvent("InteractSound_SV:PlayOnSource", "fuelstop", 0.4)
                 QBCore.Functions.Notify('Your tank is empty! Return to refuel, or get paid!', 'success', 5000)
                 RemoveBlip(GasBlip3)
-                DeleteObject(refuelProp1)
                 FreezeEntityPosition(trailerId, false)
                 TriggerEvent('spawnFlashingBlip')
                 Wait(30000)
@@ -836,7 +844,6 @@ RegisterNetEvent('refuelStation1', function()
                 StopAnimTask(playerPed, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
                 TriggerServerEvent("InteractSound_SV:PlayOnSource", "fuelstop", 0.4)
                 RemoveBlip(GasBlip3)
-                DeleteObject(refuelProp1)
                 Wait(10000)
                 GetNextLocation()
             end
