@@ -544,60 +544,52 @@ function RefuelStation(location)
     refuelProp1 = CreateObject(refuelProp, location.x, location.y, location.z-1, true, false, false)
     FreezeEntityPosition(refuelProp1, true)
     SetEntityAsMissionEntity(refuelProp1, true, true)
-    local playerPed = PlayerPedId()
-    local playerCoords = GetEntityCoords(playerPed)
-
-    local distance = GetDistanceBetweenCoords(playerCoords.x, playerCoords.y, playerCoords.z, location.x, location.y, location.z, true)
-
-    if distance <= 5.0 then
-
-        if cooldown == 1 then
-            if Config.Target == 'qb' then
-                for _, model in ipairs(trailerModels) do
-                    local modelHash = tonumber(model)
-                    exports['qb-target']:AddTargetModel({modelHash}, {
-                        options = {
-                        {
-                            num = 1,
-                            event = "pumpRefuel",
-                            icon = "fas fa-gas-pump",
-                            label = "Grab Fuel Line",
-                            action = function()
-                                FreezeEntityPosition(trailerId, true)
-                                nozzleInHand = true
-                                TriggerEvent('pumpRefuel')
-                            end,
-                            canInteract = function()
-                                if not nozzleInHand then
-                                    return true
-                                else
-                                    return false
-                                end
+    if cooldown == 1 then
+        if Config.Target == 'qb' then
+            for _, model in ipairs(trailerModels) do
+                local modelHash = tonumber(model)
+                exports['qb-target']:AddTargetModel({modelHash}, {
+                    options = {
+                    {
+                        num = 1,
+                        event = "pumpRefuel",
+                        icon = "fas fa-gas-pump",
+                        label = "Grab Fuel Line",
+                        action = function()
+                            FreezeEntityPosition(trailerId, true)
+                            nozzleInHand = true
+                            TriggerEvent('pumpRefuel')
+                        end,
+                        canInteract = function()
+                            if not nozzleInHand then
+                                return true
+                            else
+                                return false
                             end
-                        },
-                        {
-                            num = 2,
-                            type = "client",
-                            event = "ReturnNozzle",
-                            icon = "fas fa-hand",
-                            label = "Return Nozzle",
-                            action = function()
-                                nozzleInHand = false
-                                FreezeEntityPosition(trailerId, false)
-                                TriggerEvent('ReturnNozzle')
-                            end,
-                            canInteract = function()
-                                if nozzleInHand and RefuelingStation == false then
-                                    return true
-                                else
-                                    return false
-                                end
-                            end,
-                        },
+                        end
                     },
-                    distance = 5.0
-                })
-                end
+                    {
+                        num = 2,
+                        type = "client",
+                        event = "ReturnNozzle",
+                        icon = "fas fa-hand",
+                        label = "Return Nozzle",
+                        action = function()
+                            nozzleInHand = false
+                            FreezeEntityPosition(trailerId, false)
+                            TriggerEvent('ReturnNozzle')
+                        end,
+                        canInteract = function()
+                            if nozzleInHand and RefuelingStation == false then
+                                return true
+                            else
+                                return false
+                            end
+                        end,
+                    },
+                },
+                distance = 5.0
+            })
             end
         end
     end
