@@ -396,21 +396,26 @@ end)
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
 RegisterNetEvent('ReturnNozzle', function()
-	nozzleInHand = false
-	TriggerServerEvent("InteractSound_SV:PlayOnSource", "putbacknozzle", 0.4)
-	Wait(250)
-	DeleteObject(fuelnozzle1)
+    nozzleInHand = false
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "putbacknozzle", 0.4)
+    Wait(250)
+    DeleteObject(fuelnozzle1)
     DeleteObject(fuelnozzle2)
-	RopeUnloadTextures()
-	DeleteRope(Rope1)
+    RopeUnloadTextures()
+    DeleteRope(Rope1)
     DeleteRope(Rope2)
+    ResetNozzleInHand()
 end)
 
 --/////////////////////////////////////////////////////////////////////////////////////////////////--
 
+function ResetNozzleInHand()
+    nozzleInHand = false
+end
+
 function BringToTruck()
     if Config.Debug == true then
-        print("cooldown: "..cooldown)
+        print("cooldown: " .. cooldown)
     end
     CreateThread(function()
         local insideZone = false
@@ -428,25 +433,25 @@ function BringToTruck()
                             for _, model in ipairs(trailerModels) do
                                 local modelHash = tonumber(model)
                                 exports['qb-target']:AddTargetModel({modelHash}, {
-                                options = {
-                                {
-                                    type = "client",
-                                    event = "FuelTruck",
-                                    icon = "fas fa-gas-pump",
-                                    label = "Fuel Truck",
-                                    canInteract = function()
-                                        if nozzleInHand and cooldown == 0 then
-                                            return true
-                                        else
-                                            return false
-                                        end
-                                    end
-                                },
-                            },
-                            distance = 5.0,
-                            })
+                                    options = {
+                                        {
+                                            type = "client",
+                                            event = "FuelTruck",
+                                            icon = "fas fa-gas-pump",
+                                            label = "Fuel Truck",
+                                            canInteract = function()
+                                                if nozzleInHand and cooldown == 0 then
+                                                    return true
+                                                else
+                                                    return false
+                                                end
+                                            end
+                                        },
+                                    },
+                                    distance = 5.0,
+                                })
                             end
-			            end
+                        end
                     end
                     if Config.Debug == true then
                         print("Player has entered the box zone")
